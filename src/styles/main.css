@@ -1,0 +1,85 @@
+:root {
+  /* 테마 변수들 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-card: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+  --accent-color: #4f46e5;
+  --accent-hover: #4338ca;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* 트랜지션 변수 */
+  --theme-transition-duration: 0.3s;
+  --theme-transition-timing: ease;
+}
+
+.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-card: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border-color: #374151;
+  --accent-color: #6366f1;
+  --accent-hover: #818cf8;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* 테마 전환 시 부드러운 트랜지션을 위한 설정 */
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+html,
+body,
+* {
+  transition:
+    background-color var(--theme-transition-duration)
+      var(--theme-transition-timing),
+    border-color var(--theme-transition-duration) var(--theme-transition-timing),
+    color var(--theme-transition-duration) var(--theme-transition-timing),
+    box-shadow var(--theme-transition-duration) var(--theme-transition-timing);
+}
+
+/* 특정 엘리먼트에서 트랜지션을 제외 - 성능 향상을 위해 */
+.no-transition {
+  transition: none !important;
+}
+
+/* 초기 페이지 로딩 시 깜빡임 방지 */
+.theme-transition-ready {
+  transition:
+    background-color var(--theme-transition-duration)
+      var(--theme-transition-timing),
+    border-color var(--theme-transition-duration) var(--theme-transition-timing),
+    color var(--theme-transition-duration) var(--theme-transition-timing),
+    box-shadow var(--theme-transition-duration) var(--theme-transition-timing);
+}
+
+/* 유틸리티 클래스들 */
+.bg-theme-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-theme-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-theme-card {
+  background-color: var(--bg-card);
+}
+
+.text-theme-primary {
+  color: var(--text-primary);
+}
+
+.text-theme-secondary {
+  color: var(--text-secondary);
+}
+
+.border-theme {
+  border-color: var(--border-color);
+}
