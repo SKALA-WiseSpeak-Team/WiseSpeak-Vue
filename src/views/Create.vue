@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import { useI18n } from 'vue-i18n';
+
+  import { postLectures } from '../services/postLectures';
 
   // i18n 사용 (필요한 경우 설정 필요)
   // const { t } = useI18n()
@@ -42,19 +43,6 @@
     return translations[key] || key;
   };
 
-  // 음성 유형
-  const voiceTypes = [
-    {
-      id: 'female1',
-      name: '여성 음성 1',
-      description: '젊은 성인 여성 목소리'
-    },
-    { id: 'female2', name: '여성 음성 2', description: '성숙한 여성 목소리' },
-    { id: 'male1', name: '남성 음성 1', description: '젊은 성인 남성 목소리' },
-    { id: 'male2', name: '남성 음성 2', description: '성숙한 남성 목소리' },
-    { id: 'male3', name: '남성 음성 3', description: '어르신 남성 목소리' }
-  ];
-
   // 상태 관리
   const step = ref(1);
   const file = ref<File | null>(null);
@@ -63,7 +51,6 @@
   const uploadError = ref('');
   const title = ref('');
   const description = ref('');
-  const selectedVoice = ref('');
   const generationProgress = ref(0);
   const isGenerating = ref(false);
   const isComplete = ref(false);
@@ -131,7 +118,7 @@
       return;
     }
 
-    if (step.value === 2 && (!title.value.trim() || !selectedVoice.value)) {
+    if (step.value === 2 && !title.value.trim()) {
       return;
     }
 
@@ -139,7 +126,7 @@
   };
 
   const handleGenerateLecture = async () => {
-    if (!title.value.trim() || !selectedVoice.value || !file.value) {
+    if (!title.value.trim() || !file.value) {
       return;
     }
 
@@ -149,13 +136,6 @@
     generationProgress.value = 0;
 
     try {
-      // FormData 생성
-      const formData = new FormData();
-      formData.append('file', file.value);
-      formData.append('title', title.value);
-      formData.append('description', description.value);
-      formData.append('voiceType', selectedVoice.value);
-
       // 진행 상태 시뮬레이션
       const progressInterval = setInterval(() => {
         generationProgress.value += 2;
@@ -164,32 +144,24 @@
         }
       }, 200);
 
-      // API 호출 (주석 처리한 실제 API 호출)
-      /* 
-    const response = await fetch('http://localhost:8000/api/upload', {
-      method: 'POST',
-      body: formData,
-    })
+      // API 호출
+      const response = await postLectures({
+        file: file.value,
+        title: title.value,
+        description: description.value || undefined
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to generate lecture')
-    }
-
-    const data = await response.json()
-    generatedLectureId.value = data.lectureId
-    */
-
-      // 데모 목적으로 시뮬레이션된 성공 응답
-      setTimeout(() => {
-        isGenerating.value = false;
-        isComplete.value = true;
-        generatedLectureId.value = 'demo-lecture-123';
-        generationProgress.value = 100;
-      }, 5000); // 5초 후 완료
+      clearInterval(progressInterval);
+      generationProgress.value = 100;
+      isGenerating.value = false;
+      isComplete.value = true;
+      generatedLectureId.value = response.lectureId;
     } catch (error) {
       console.error('Error generating lecture:', error);
       uploadError.value = t('create.errorGenerating');
       isGenerating.value = false;
+      clearInterval(progressInterval);
+      generationProgress.value = 0;
     }
   };
 
@@ -214,7 +186,7 @@
 
   const buttonDisabled = computed(() => {
     if (step.value === 1) return !file.value || uploadProgress.value < 100;
-    if (step.value === 2) return !title.value.trim() || !selectedVoice.value;
+    if (step.value === 2) return !title.value.trim();
     return false;
   });
 </script>
@@ -452,65 +424,6 @@
                   :placeholder="t('create.descriptionPlaceholder')"
                 ></textarea>
               </div>
-
-              <div>
-                <div
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  {{ t('create.voiceType') }}
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                  <div
-                    v-for="voice in voiceTypes"
-                    :key="voice.id"
-                    class="border rounded-lg cursor-pointer transition-all duration-300"
-                    :class="{
-                      'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-700':
-                        selectedVoice === voice.id,
-                      'border-gray-300 dark:border-gray-700 hover:border-blue-400':
-                        selectedVoice !== voice.id
-                    }"
-                    @click="selectedVoice = voice.id"
-                  >
-                    <div class="p-4">
-                      <div class="flex items-center mb-2">
-                        <div class="flex items-center space-x-2">
-                          <div
-                            class="w-5 h-5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center"
-                            :class="{
-                              'bg-blue-600 border-blue-600':
-                                selectedVoice === voice.id
-                            }"
-                          >
-                            <svg
-                              v-if="selectedVoice === voice.id"
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="h-3 w-3 text-white"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <label
-                            :for="voice.id"
-                            class="font-medium cursor-pointer text-gray-900 dark:text-white"
-                          >
-                            {{ voice.name }}
-                          </label>
-                        </div>
-                      </div>
-                      <p class="text-sm text-gray-500 dark:text-gray-400">
-                        {{ voice.description }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -604,13 +517,8 @@
 
             <div v-if="step === 2" class="space-x-3 flex">
               <button
-                class="py-2 px-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-              >
-                {{ t('create.saveForLater') }}
-              </button>
-              <button
                 @click="handleGenerateLecture"
-                :disabled="!title.trim() || !selectedVoice"
+                :disabled="!title.trim() || !file"
                 class="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:bg-blue-400"
               >
                 {{ t('create.generateLecture') }}

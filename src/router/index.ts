@@ -1,6 +1,6 @@
 // router/index.ts
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../views/Home.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/lecture/:id',
       name: 'lecture',
-      component: () => import('../views/Lecture.vue')
+      component: () => import('../views/lecture/Lecture.vue')
     },
     {
       path: '/create',
@@ -26,6 +26,6 @@ const router = createRouter({
       component: () => import('../views/Create.vue')
     }
   ]
-})
+});
 
-export default router
+export default router;
