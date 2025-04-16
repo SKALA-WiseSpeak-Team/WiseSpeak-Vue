@@ -1,10 +1,18 @@
 <script setup lang="ts">
-  import { reactive, onMounted, onBeforeUnmount } from 'vue';
+  import {
+    reactive,
+    onMounted,
+    onBeforeUnmount,
+    ref,
+    watch,
+    computed
+  } from 'vue';
   import {
     useVisibilityObserver,
     useElementsVisibilityObserver,
     useParallaxEffect
   } from '../composables/useIntersectionObserver';
+  import { getLectures, type Lecture } from '../services/getLectures';
 
   // 섹션별 가시성
   const { targetRef: heroRef, isVisible: heroVisible } =
@@ -23,40 +31,21 @@
   } = useElementsVisibilityObserver({ delay: 150 });
 
   // 강의 아이템 가시성
-  const {
-    setElementRef: setLectureItemRef,
-    visibleState: lectureItemsVisible
-  } = useElementsVisibilityObserver({ delay: 150 });
+  useElementsVisibilityObserver({ delay: 150 });
 
   // 패럴랙스 효과
   const { setupParallax } = useParallaxEffect();
 
   // 샘플 강의 데이터
-  const featuredLectures = reactive([
-    {
-      id: 1,
-      title: '고대 로마 건축의 비밀',
-      description: '고대 로마의 건축 기술과 공학적 경이로움을 탐구합니다'
-    },
-    {
-      id: 2,
-      title: '현대 물리학의 이해',
-      description: '양자역학과 상대성 이론의 이해'
-    },
-    {
-      id: 3,
-      title: '철학의 기초',
-      description: '기본적인 철학 개념과 사상가들'
-    }
-  ]);
+  const allLectures = ref<Lecture[]>([]);
+  const featuredLectures = ref<Lecture[]>([]);
+  const showAll = ref(false);
 
-  onMounted(() => {
-    // 페이지 로드시 기본적으로 히어로 섹션은 보이도록 설정
-    if (!heroVisible.value) {
-      setTimeout(() => {
-        heroVisible.value = true;
-      }, 100);
-    }
+  onMounted(async () => {
+    const response = await getLectures();
+    allLectures.value = response.data; // ★ 타입 맞게 깔끔하게
+    featuredLectures.value = allLectures.value.slice(0, 3);
+    console.log(featuredLectures);
 
     // 패럴랙스 효과 설정
     const cleanup = setupParallax();
@@ -64,6 +53,18 @@
     // 컴포넌트가 언마운트될 때 정리
     onBeforeUnmount(cleanup);
   });
+
+  const originalDate = '2025-04-16T06:04:37.781084Z';
+
+  // 날짜 형식 변환 함수
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}년 ${month}월 ${day}일`;
+  }
+
 </script>
 
 <template>
@@ -336,15 +337,8 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div
-          v-for="(lecture, index) in featuredLectures"
+          v-for="(lecture, index) in showAll ? allLectures : featuredLectures"
           :key="lecture.id"
-          :ref="el => setLectureItemRef(el, index)"
-          class="transition-all duration-700"
-          :style="`transition-delay: ${index * 150}ms`"
-          :class="{
-            'translate-y-0 opacity-100': lectureItemsVisible[index],
-            'translate-y-24 opacity-0': !lectureItemsVisible[index]
-          }"
         >
           <a :href="`/lecture/${lecture.id}`" class="block">
             <div
@@ -386,8 +380,8 @@
                 <div
                   class="flex justify-between text-xs text-gray-500 dark:text-gray-400"
                 >
-                  <span>12 페이지</span>
-                  <span>2025년 4월 10일</span>
+                  <span>{{ lecture.total_pages }} 페이지</span>
+                  <span>{{ formatDate(lecture.created_at) }}</span>
                 </div>
               </div>
             </div>
