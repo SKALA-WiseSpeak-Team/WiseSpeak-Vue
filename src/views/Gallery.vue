@@ -313,41 +313,47 @@
       </Transition>
 
       <!-- 이미지 그리드 -->
+      <!-- 이미지 그리드 부분 수정 -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div
+        <router-link
           v-for="(image, index) in filteredImages"
           :key="image.id"
-          :ref="el => setCardRef(el, index)"
-          class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-500"
-          :class="{
-            'opacity-100 translate-y-0': cardVisible[index],
-            'opacity-0 translate-y-16': !cardVisible[index]
-          }"
+          :to="`/lecture/${image.id}`"
+          class="block"
         >
-          <div class="h-48 overflow-hidden">
-            <img
-              :src="image.url"
-              :alt="image.title"
-              class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-            />
-          </div>
-          <div class="p-6">
-            <h3
-              class="text-xl font-semibold text-gray-900 dark:text-white mb-2"
-            >
-              {{ image.title }}
-            </h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-3">
-              {{ image.description }}
-            </p>
-            <div
-              class="flex justify-between text-sm text-gray-500 dark:text-gray-400"
-            >
-              <span>{{ image.createdAt }}</span>
-              <span>{{ image.pageCount }}페이지</span>
+          <div
+            :ref="el => setCardRef(el, index)"
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-500 cursor-pointer"
+            :class="{
+              'opacity-100 translate-y-0': cardVisible[index],
+              'opacity-0 translate-y-16': !cardVisible[index]
+            }"
+          >
+            <div class="h-48 overflow-hidden">
+              <img
+                :src="image.url"
+                :alt="image.title"
+                class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+              />
+            </div>
+            <div class="p-6">
+              <h3
+                class="text-xl font-semibold text-gray-900 dark:text-white mb-2"
+              >
+                {{ image.title }}
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-3">
+                {{ image.description }}
+              </p>
+              <div
+                class="flex justify-between text-sm text-gray-500 dark:text-gray-400"
+              >
+                <span>{{ image.createdAt }}</span>
+                <span>{{ image.pageCount }}페이지</span>
+              </div>
             </div>
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
   </div>
