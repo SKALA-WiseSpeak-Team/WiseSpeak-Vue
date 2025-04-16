@@ -15,21 +15,10 @@
     isLangMenuOpen.value = !isLangMenuOpen.value
   }
 
-  const toggleDarkMode = () => {
-    isDarkMode.value = !isDarkMode.value
-    if (isDarkMode.value) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('darkMode', 'true')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('darkMode', 'false')
-    }
-  }
-
-  const changeLanguage = (langCode: string) => {
-    setLocale(langCode)
-    isLangMenuOpen.value = false
-  }
+  // const changeLanguage = (langCode: string) => {
+  //   setLocale(langCode)
+  //   isLangMenuOpen.value = false
+  // }
 
   onMounted(() => {
     // 저장된 다크모드 설정 불러오기
@@ -55,7 +44,7 @@
             class="w-10 h-10 rounded-md mr-3"
           />
           <span class="font-bold text-xl text-gray-900 dark:text-white"
-            >WISESPEAK</span
+            >WiseSpeak</span
           >
         </a>
 
@@ -109,7 +98,6 @@
               <button
                 v-for="lang in ['ko', 'en', 'ja', 'zh', 'fr']"
                 :key="lang"
-                @click="changeLanguage(lang)"
                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 {{
@@ -195,7 +183,7 @@
       </div>
     </header>
 
-    <main>
+    <main class="min-h-screen flex-grow bg-gray-50 dark:bg-gray-900">
       <slot></slot>
     </main>
 
