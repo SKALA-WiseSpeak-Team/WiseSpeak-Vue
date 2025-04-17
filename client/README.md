@@ -55,5 +55,3 @@ yarn dev
 │   └── main.ts       # 애플리케이션 진입점
 └── package.json
 ```
-
-hi
