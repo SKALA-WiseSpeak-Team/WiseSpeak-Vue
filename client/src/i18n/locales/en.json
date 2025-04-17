@@ -1,0 +1,31 @@
+{
+  "navigation": {
+    "home": "Home",
+    "gallery": "Lecture Gallery",
+    "create": "Create Lecture"
+  },
+  "lecture": {
+    "settings": "Lecture Settings",
+    "voice": "Voice Settings",
+    "fullscreen": "Fullscreen",
+    "pages": "Pages",
+    "prev": "Previous Page",
+    "next": "Next Page",
+    "chat": {
+      "placeholder": "Ask about the lecture...",
+      "send": "Send",
+      "recording": "Recording..."
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "footer": {
+    "copyright": "© 2025 WiseSpeak. All rights reserved."
+  }
+}

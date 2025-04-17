@@ -1,0 +1,31 @@
+{
+  "navigation": {
+    "home": "홈",
+    "gallery": "강의 갤러리",
+    "create": "강의 만들기"
+  },
+  "lecture": {
+    "settings": "강의 설정",
+    "voice": "음성 설정",
+    "fullscreen": "전체화면",
+    "pages": "페이지",
+    "prev": "이전 페이지",
+    "next": "다음 페이지",
+    "chat": {
+      "placeholder": "강의에 대해 질문하기...",
+      "send": "전송",
+      "recording": "녹음 중..."
+    }
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "cancel": "취소",
+    "confirm": "확인",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "편집"
+  },
+  "footer": {
+    "copyright": "© 2025 WiseSpeak. All rights reserved."
+  }
+}
