@@ -20,6 +20,17 @@ WiseSpeak은 PDF 문서를 AI 기반 챗봇이 지원하는 인터랙티브 오�
 - Node.js 16.x 이상
 - npm 8.x 이상 또는 yarn 1.22.x 이상
 
+### env
+
+```
+# /client/.env
+VITE_API_BASE_URL="your server API URL"
+
+# /server/.env
+# TTS모델 사용을 위한 API key
+OPENAI_API_KEY = " your OpenAI API Key"
+```
+
 ### 설치
 
 ```bash
